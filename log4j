@@ -1,9 +1,21 @@
-The REGEX is: ((\${)((\${)?((upper|lower|(env)?:.*:.*})?[jJlLnNdDiIaApPsSmMrRoOhH}:]*))+)// 
-So if your SSH client breaks, it you can fix it.
+Log4J :
+What follows is not an absolute workaround, but it may help save time for your customers by blocking the scanning attacks using the URL or the headers as vectors.
+I had to many false positive using the regex against POST bodies when binary/pfg files are uploded (i.e. breaks MAPI for instance)
+if you want to log the entries, make sur user custom log is on :wink:
+the regex I built and refined through the course of yesterday
+((\${)((\${)?((upper|lower|(env)?:.*:.*})?[jJlLnNdDiIaApPsSmMrRoOhH}:]*))+)//
 
+
+2 . the responder and log policies
 add audit messageaction Log4Shell_URL_log ALERT "\"Log4Shell  cve-2021-44228 URL match - Client IP=\"+ CLIENT.IP.SRC + \"; REQ Host=\"+ HTTP.REQ.HOSTNAME+ \"; REQ URL=\"+ HTTP.REQ.URL.DECODE_USING_TEXT_MODE + \" ; REQ HEADERS=\"+ HTTP.REQ.FULL_HEADER.DECODE_USING_TEXT_MODE" -logtoNewnslog YES
 add audit messageaction Log4Shell_Headers_log ALERT "\"Log4Shell  cve-2021-44228 HEADER  match - Client IP=\"+ CLIENT.IP.SRC + \"; REQ Host=\"+ HTTP.REQ.HOSTNAME+ \"; REQ URL=\"+ HTTP.REQ.URL.DECODE_USING_TEXT_MODE + \" ; REQ HEADERS=\"+ HTTP.REQ.FULL_HEADER.DECODE_USING_TEXT_MODE" -logtoNewnslog YES
 add responder policy GLOVR_RSP_POL_Log4Shell_Headers "HTTP.REQ.FULL_HEADER.DECODE_USING_TEXT_MODE.REGEX_MATCH(re#((\\${)((\\${)\?((upper|lower|(env)\?:.*:.*})\?[jJlLnNdDiIaApPsSmMrRoOhH}:]*))+)//#)" DROP -logAction Log4Shell_Headers_log
 add responder policy GLOVR_RSP_POL_Log4Shell_URL "HTTP.REQ.URL.PATH_AND_QUERY.DECODE_USING_TEXT_MODE.REGEX_MATCH(re#((\\${)((\\${)\?((upper|lower|(env)\?:.*:.*})\?[jJlLnNdDiIaApPsSmMrRoOhH}:]*))+)//#)" DROP -logAction Log4Shell_URL_log
 bind responder global GLOVR_RSP_POL_Log4Shell_Headers 100 END -type REQ_OVERRIDE
-bind responder global GLOVR_RSP_POL_Log4Shell_URL 110 END -type REQ_OVERRIDE
+bind responder global GLOVR_RSP_POL_Log4Shell_URL 110 END -type REQ_OVERRIDE (edited) 
+
+
+Note that each ? character in the regex  is escaped with \ so you can copy/paste through putty to the CLI (edited) 
+
+REMINDER : IT IS NOT AN ABSOLUTE PROTECTION BUT IT DOES COVER MORE CASES THAN THE APPFW SIGNATURE RELEASED YESTERDAY AND WORKS IN ANY ADC AS IT IS BASED ON RESPONDER
+USE IT, MODIFY IT, BUT DON'T BLAME ME FOR ANYTHING ;-)
