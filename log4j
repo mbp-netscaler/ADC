@@ -5,6 +5,11 @@ if you want to log the entries, make sure user custom log is on
 
 System - Auditing - Change Auditing Syslog/nslog Setting and enable User Configurable Log Messages
 
+CLI:
+set audit syslogparams -userdefinedAuditlog YES
+set audit nslogparams -userdefinedAuditlog YES
+
+
 1.
 the regex I built and refined through the course of yesterday
 ((\${)((\${)?((upper|lower|(env)?:.*:.*})?[jJlLnNdDiIaApPsSmMrRoOhH}:]*))+)//
