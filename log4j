@@ -14,7 +14,6 @@ add responder policy GLOVR_RSP_POL_Log4Shell_URL "HTTP.REQ.URL.PATH_AND_QUERY.DE
 bind responder global GLOVR_RSP_POL_Log4Shell_Headers 100 END -type REQ_OVERRIDE
 bind responder global GLOVR_RSP_POL_Log4Shell_URL 110 END -type REQ_OVERRIDE (edited) 
 
-
 Note that each ? character in the regex  is escaped with \ so you can copy/paste through putty to the CLI (edited) 
 
 REMINDER : IT IS NOT AN ABSOLUTE PROTECTION BUT IT DOES COVER MORE CASES THAN THE APPFW SIGNATURE RELEASED YESTERDAY AND WORKS IN ANY ADC AS IT IS BASED ON RESPONDER
