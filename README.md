@@ -16,3 +16,6 @@ Note that each ? character in the regex  is escaped with \ so you can copy/paste
 
 REMINDER : IT IS NOT AN ABSOLUTE PROTECTION BUT IT DOES COVER MORE CASES THAN THE APPFW SIGNATURE RELEASED YESTERDAY AND WORKS IN ANY ADC AS IT IS BASED ON RESPONDER
 USE IT, MODIFY IT, BUT DON'T BLAME ME FOR ANYTHING ;-)
+
+
+This is an issue that is best served by patching or disabling.
