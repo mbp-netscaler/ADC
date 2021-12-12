@@ -1,3 +1,6 @@
+The REGEX is: ((\${)((\${)?((upper|lower|(env)?:.*:.*})?[jJlLnNdDiIaApPsSmMrRoOhH}:]*))+)// 
+So if your SSH client breaks, it you can fix it.
+
 add audit messageaction Log4Shell_URL_log ALERT "\"Log4Shell  cve-2021-44228 URL match - Client IP=\"+ CLIENT.IP.SRC + \"; REQ Host=\"+ HTTP.REQ.HOSTNAME+ \"; REQ URL=\"+ HTTP.REQ.URL.DECODE_USING_TEXT_MODE + \" ; REQ HEADERS=\"+ HTTP.REQ.FULL_HEADER.DECODE_USING_TEXT_MODE" -logtoNewnslog YES
 add audit messageaction Log4Shell_Headers_log ALERT "\"Log4Shell  cve-2021-44228 HEADER  match - Client IP=\"+ CLIENT.IP.SRC + \"; REQ Host=\"+ HTTP.REQ.HOSTNAME+ \"; REQ URL=\"+ HTTP.REQ.URL.DECODE_USING_TEXT_MODE + \" ; REQ HEADERS=\"+ HTTP.REQ.FULL_HEADER.DECODE_USING_TEXT_MODE" -logtoNewnslog YES
 add responder policy GLOVR_RSP_POL_Log4Shell_Headers "HTTP.REQ.FULL_HEADER.DECODE_USING_TEXT_MODE.REGEX_MATCH(re#((\\${)((\\${)\?((upper|lower|(env)\?:.*:.*})\?[jJlLnNdDiIaApPsSmMrRoOhH}:]*))+)//#)" DROP -logAction Log4Shell_Headers_log
