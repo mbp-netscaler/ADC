@@ -22,6 +22,11 @@ This is the builtin regex checker on the ADC
 
 ![REGEX](https://github.com/mbp-netscaler/ADC/blob/main/regex.jpg?raw=true)
 
+
+The new regex
+
+![REGEXv2](https://github.com/mbp-netscaler/ADC/blob/main/Gunter-regex.jpg?raw=true)
+
 Note that each ? character in the regex  is escaped with \ so you can copy/paste through putty to the CLI
 
 REMINDER : IT IS NOT AN ABSOLUTE PROTECTION BUT IT DOES COVER MORE CASES THAN THE APPFW SIGNATURE RELEASED YESTERDAY AND WORKS IN ANY ADC AS IT IS BASED ON RESPONDER
