@@ -18,7 +18,7 @@ So to post some awereness about, i've put the responder and logging policies her
 What follows is not an absolute workaround, but it may help save time for your customers by blocking the scanning attacks using the URL or the headers as vectors.
 I had to many false positive using the regex against POST bodies when binary/pfg files are uploded (i.e. breaks MAPI for instance)
 
-This is the builtin regex checker on the ADC
+the regexr.com tester of the regex
 
 ![REGEX](https://github.com/mbp-netscaler/ADC/blob/main/regex.jpg?raw=true)
 
