@@ -47,6 +47,6 @@ add audit messageaction Log4Shell_Headers_log ALERT "\"Log4Shell  cve-2021-44228
 add responder policy GLOVR_RSP_POL_Log4Shell_Headers_v2 "HTTP.REQ.FULL_HEADER.DECODE_USING_TEXT_MODE.REGEX_MATCH(re#\\$\\{\?(.*\?:|.*\?:.*-)\?[jJlLnNdDiIaApPsSmMrRoOhH}:]*//#)" DROP -logAction Log4Shell_Headers_log
 add responder policy GLOVR_RSP_POL_Log4Shell_URL_v2 "HTTP.REQ.URL.PATH_AND_QUERY.DECODE_USING_TEXT_MODE.REGEX_MATCH(re#\\$\\{\?(.*\?:|.*\?:.*-)\?[jJlLnNdDiIaApPsSmMrRoOhH}:]*//#)" DROP -logAction Log4Shell_URL_log
 
-bind responder global GLOVR_RSP_POL_Log4Shell_Headers_v2 100 END -type REQ_OVERRIDE
-bind responder global GLOVR_RSP_POL_Log4Shell_URL_v2 110 END -type REQ_OVERRIDE
+bind responder global GLOVR_RSP_POL_Log4Shell_Headers_v2 120 END -type REQ_OVERRIDE
+bind responder global GLOVR_RSP_POL_Log4Shell_URL_v2 130 END -type REQ_OVERRIDE
 
