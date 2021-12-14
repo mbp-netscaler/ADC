@@ -12,12 +12,41 @@ set audit nslogparams -userdefinedAuditlog YES
 2.
 the regex I built and refined through the course of yesterday
 ((\${)((\${)?((upper|lower|(env)?:.*:.*})?[jJlLnNdDiIaApPsSmMrRoOhH}:]*))+)//
+Gunthers regex:
+\$\{?(.*?:|.*?:.*-)?[jJlLnNdDiIaApPsSmMrRoOhH}:]*// 
 
 
 3. the responder and log policies
+#Citrix policies from the blog
+add policy patset patset_cve_2021_44228
+bind policy patset patset_cve_2021_44228 ldap
+bind policy patset patset_cve_2021_44228 http
+bind policy patset patset_cve_2021_44228 https
+bind policy patset patset_cve_2021_44228 ldaps
+bind policy patset patset_cve_2021_44228 rmi
+bind policy patset patset_cve_2021_44228 dns
+add responder policy mitigate_cve_2021_44228 q^HTTP.REQ.FULL_HEADER.SET_TEXT_MODE(URLENCODED).DECODE_USING_TEXT_MODE.AFTER_STR("${").BEFORE_STR("}").CONTAINS("${") || HTTP.REQ.FULL_HEADER.SET_TEXT_MODE(URLENCODED).DECODE_USING_TEXT_MODE.SET_TEXT_MODE(IGNORECASE).STRIP_CHARS("${: }/+").AFTER_STR("jndi").CONTAINS_ANY("patset_cve_2021_44228") || HTTP.REQ.BODY(8192).SET_TEXT_MODE(URLENCODED).DECODE_USING_TEXT_MODE.AFTER_STR("${").BEFORE_STR("}").CONTAINS("${") || HTTP.REQ.BODY(8192).SET_TEXT_MODE(URLENCODED).DECODE_USING_TEXT_MODE. SET_TEXT_MODE(IGNORECASE).STRIP_CHARS("${: }/+").AFTER_STR("jndi").CONTAINS_ANY("patset_cve_2021_44228")^ DROP
+
+
+#Original responder policies with regex from Eric
 add audit messageaction Log4Shell_URL_log ALERT "\"Log4Shell  cve-2021-44228 URL match - Client IP=\"+ CLIENT.IP.SRC + \"; REQ Host=\"+ HTTP.REQ.HOSTNAME+ \"; REQ URL=\"+ HTTP.REQ.URL.DECODE_USING_TEXT_MODE + \" ; REQ HEADERS=\"+ HTTP.REQ.FULL_HEADER.DECODE_USING_TEXT_MODE" -logtoNewnslog YES
 add audit messageaction Log4Shell_Headers_log ALERT "\"Log4Shell  cve-2021-44228 HEADER  match - Client IP=\"+ CLIENT.IP.SRC + \"; REQ Host=\"+ HTTP.REQ.HOSTNAME+ \"; REQ URL=\"+ HTTP.REQ.URL.DECODE_USING_TEXT_MODE + \" ; REQ HEADERS=\"+ HTTP.REQ.FULL_HEADER.DECODE_USING_TEXT_MODE" -logtoNewnslog YES
+
 add responder policy GLOVR_RSP_POL_Log4Shell_Headers "HTTP.REQ.FULL_HEADER.DECODE_USING_TEXT_MODE.REGEX_MATCH(re#((\\${)((\\${)\?((upper|lower|(env)\?:.*:.*})\?[jJlLnNdDiIaApPsSmMrRoOhH}:]*))+)//#)" DROP -logAction Log4Shell_Headers_log
 add responder policy GLOVR_RSP_POL_Log4Shell_URL "HTTP.REQ.URL.PATH_AND_QUERY.DECODE_USING_TEXT_MODE.REGEX_MATCH(re#((\\${)((\\${)\?((upper|lower|(env)\?:.*:.*})\?[jJlLnNdDiIaApPsSmMrRoOhH}:]*))+)//#)" DROP -logAction Log4Shell_URL_log
+
 bind responder global GLOVR_RSP_POL_Log4Shell_Headers 100 END -type REQ_OVERRIDE
 bind responder global GLOVR_RSP_POL_Log4Shell_URL 110 END -type REQ_OVERRIDE
+
+
+
+#Policies with the regex from Gunther with logs from and binding from the original one
+add audit messageaction Log4Shell_URL_log ALERT "\"Log4Shell  cve-2021-44228 URL match - Client IP=\"+ CLIENT.IP.SRC + \"; REQ Host=\"+ HTTP.REQ.HOSTNAME+ \"; REQ URL=\"+ HTTP.REQ.URL.DECODE_USING_TEXT_MODE + \" ; REQ HEADERS=\"+ HTTP.REQ.FULL_HEADER.DECODE_USING_TEXT_MODE" -logtoNewnslog YES
+add audit messageaction Log4Shell_Headers_log ALERT "\"Log4Shell  cve-2021-44228 HEADER  match - Client IP=\"+ CLIENT.IP.SRC + \"; REQ Host=\"+ HTTP.REQ.HOSTNAME+ \"; REQ URL=\"+ HTTP.REQ.URL.DECODE_USING_TEXT_MODE + \" ; REQ HEADERS=\"+ HTTP.REQ.FULL_HEADER.DECODE_USING_TEXT_MODE" -logtoNewnslog YES
+
+add responder policy GLOVR_RSP_POL_Log4Shell_Headers_v2 "HTTP.REQ.FULL_HEADER.DECODE_USING_TEXT_MODE.REGEX_MATCH(re#\\$\\{\?(.*\?:|.*\?:.*-)\?[jJlLnNdDiIaApPsSmMrRoOhH}:]*//#)" DROP -logAction Log4Shell_Headers_log
+add responder policy GLOVR_RSP_POL_Log4Shell_URL_v2 "HTTP.REQ.URL.PATH_AND_QUERY.DECODE_USING_TEXT_MODE.REGEX_MATCH(re#\\$\\{\?(.*\?:|.*\?:.*-)\?[jJlLnNdDiIaApPsSmMrRoOhH}:]*//#)" DROP -logAction Log4Shell_URL_log
+
+bind responder global GLOVR_RSP_POL_Log4Shell_Headers_v2 100 END -type REQ_OVERRIDE
+bind responder global GLOVR_RSP_POL_Log4Shell_URL_v2 110 END -type REQ_OVERRIDE
+
