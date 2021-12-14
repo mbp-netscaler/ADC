@@ -8,6 +8,8 @@ I will most likely also update the responders here, because there seems to be an
 
 Update 2: I've added the policies from Citrix and modified the original with the new regex, so everyone can choose.
 
+Update 3: Redone the v2 policies, as there was a false positive with MAPI - please update
+
 With the whole Log4j issue, a lot of people have asked how they maybe do some kind of protection with their Citrix ADCs.
 A group of us Citrix PTEC guys have been chatting over the weekend and Eric (https://www.linkedin.com/in/eric-julien-04b160/) made a regex that seems to work better than the Citrix AppFW signature as of now.
 
