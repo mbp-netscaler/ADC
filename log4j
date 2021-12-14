@@ -61,5 +61,5 @@ bind policy patset PS_CVE_2021_44228 https
 bind policy patset PS_CVE_2021_44228 ldaps
 bind policy patset PS_CVE_2021_44228 rmi
 bind policy patset PS_CVE_2021_44228 dns
-bind responder global RSP_LOG4SHELL_COMBINED 100 NEXT -type REQ_OVERRIDE
+bind responder global RSP_LOG4SHELL_COMBINED 100 END -type REQ_OVERRIDE
 bind responder global RSP_LOG4SHELL_CTXPS 110 END -type REQ_OVERRIDE
